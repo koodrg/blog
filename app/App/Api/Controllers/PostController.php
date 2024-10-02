@@ -1,18 +1,22 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\App\Api\Controllers;
 
-use App\Models\Post;
+use App\Domain\Post\Actions\SearchPostAction;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+    public function __construct(public SearchPostAction $searchPostAction)
+    {
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        return Post::with('user')->paginate(10);
+        return $this->searchPostAction->handle($request);
     }
 
     /**

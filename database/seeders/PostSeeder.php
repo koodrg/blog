@@ -21,9 +21,9 @@ class PostSeeder extends Seeder
             return (string) $user->_id;
         })->toArray();
 
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i <= 50000; $i++) {
             $images = [];
-            $imageCount = rand(3, 5);
+            $imageCount = rand(1, 3);
             for ($j = 0; $j < $imageCount; $j++) {
                 $images[] = $faker->imageUrl(640, 480, 'nature', true, 'Post Image');
             }

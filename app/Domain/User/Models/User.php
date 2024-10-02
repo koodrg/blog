@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Domain\User\Models;
 
 use MongoDB\Laravel\Auth\User as Authenticatable;
 
