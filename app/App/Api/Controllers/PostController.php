@@ -2,13 +2,24 @@
 
 namespace App\App\Api\Controllers;
 
+use App\App\Api\Requests\CreatePostRequest;
+use App\App\Api\Requests\UpdatePostRequest;
+use App\Domain\Post\Actions\CreatePostAction;
+use App\Domain\Post\Actions\DeletePostAction;
+use App\Domain\Post\Actions\GetPostAction;
+use App\Domain\Post\Actions\UpdatePostAction;
 use App\Domain\Post\Actions\SearchPostAction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
-    public function __construct(public SearchPostAction $searchPostAction)
-    {
+    public function __construct(
+        public SearchPostAction $searchPostAction,
+        public CreatePostAction $createPostAction,
+        public UpdatePostAction $updatePostAction,
+        public DeletePostAction $deletePostAction,
+        public GetPostAction $getPostAction) {
     }
 
     /**
@@ -20,19 +31,15 @@ class PostController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
+     *
      */
-    public function store(Request $request)
+    public function store(CreatePostRequest $request)
     {
-        //
+        $data = $request->only('title', 'content', 'images');
+        $data['created_by'] = Auth::id();
+
+        return $this->createPostAction->handle($data);
     }
 
     /**
@@ -40,23 +47,16 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        return $this->getPostAction->handle($id);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(string $id, UpdatePostRequest $request)
     {
-        //
+        $data = $request->only('title', 'content', 'images');
+        return $this->updatePostAction->handle($id, $data);
     }
 
     /**
@@ -64,6 +64,6 @@ class PostController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        return $this->deletePostAction->handle($id);
     }
 }

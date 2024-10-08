@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Domain\Post\Models;
+namespace App\Infrastructure\Models;
 
-use App\Domain\User\Models\User;
+use App\Infrastructure\Models\User;
 use MongoDB\Laravel\Eloquent\Model;
 
 class Post extends Model

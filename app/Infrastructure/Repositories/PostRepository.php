@@ -1,15 +1,17 @@
 <?php
 
-namespace App\Domain\Post\Repositories;
+namespace App\Infrastructure\Repositories;
 
-use App\Domain\Post\Models\Post;
+use App\Domain\Post\Repositories\PostRepositoryInterface;
+use App\Infrastructure\Models\Post;
+use App\Infrastructure\Repositories\Common\BaseRepository;
 use Elasticsearch\Client;
 
-class PostRepository implements PostRepositoryInterface
+class PostRepository extends BaseRepository implements PostRepositoryInterface
 {
-    public function __construct(public Client $client)
+    public function __construct(public Client $client, Post $post)
     {
-
+        $this->model = $post;
     }
 
     public function search(?string $q = '')
@@ -46,13 +48,18 @@ class PostRepository implements PostRepositoryInterface
         return Post::find($id);
     }
 
-    public function save(Post $product): void
+    public function create($data)
     {
-
+        return Post::create($data);
     }
 
-    public function delete(Post $product): void
+    public function update($id, array $data)
     {
+        return Post::where('id', $id)->update($data);
+    }
 
+    public function delete($id)
+    {
+        return Post::where('id', $id)->delete();
     }
 }
