@@ -2,10 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Domain\Post\Models\Post;
+use App\Infrastructure\Models\Post;
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class IndexElasticsearch extends Command
 {
@@ -28,13 +29,10 @@ class IndexElasticsearch extends Command
      */
     public function handle(Client $client)
     {
-        $client = ClientBuilder::create()
-            ->setHosts(config('elasticsearch.config'))
-            ->build();
 
         $posts = Post::with('user')->get();
         $params = ['body' => []];
-        $i=0;
+        $i = 0;
 
         foreach ($posts as $post) {
             $params['body'][] = [
@@ -47,7 +45,7 @@ class IndexElasticsearch extends Command
             $params['body'][] = [
                 'title' => $post->title,
                 'content' => $post->content,
-                'user' => $post->user
+                'user' => $post->user,
             ];
             $i++;
 

@@ -21,8 +21,6 @@ return array(
             'host' => $elasticsearchHost,
             'port' => $elasticsearchPort,
             'retries' => 1,
-            'user' => env('ELASTICSEARCH_USER', null),
-            'pass' => env('ELASTICSEARCH_PASS', null),
         ],
 
     ],

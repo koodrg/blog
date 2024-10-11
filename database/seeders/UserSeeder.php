@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Infrastructure\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Faker\Factory as Faker;
@@ -20,7 +21,9 @@ class UserSeeder extends Seeder
             User::create([
                 'name' => $faker->name,
                 'email' => $faker->email,
-                'password' => Hash::make('123456')
+                'password' => Hash::make('123456'),
+                'avatar' => $faker->imageUrl(),
+                'verified_at' => Carbon::now()
             ]);
         }
     }

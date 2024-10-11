@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Post;
-use App\Models\User;
+use App\Infrastructure\Models\Post;
+use App\Infrastructure\Models\User;
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Log;
 
 class PostSeeder extends Seeder
 {

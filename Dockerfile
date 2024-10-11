@@ -13,7 +13,8 @@ RUN apt-get update && apt-get install -y \
     git \
     libssl-dev \
     pkg-config \
-    libzip-dev
+    libzip-dev \
+    cron
 
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
@@ -32,5 +33,14 @@ RUN composer install
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
+# Add crontab file
+COPY ./cron/laravel-cron /etc/cron.d/laravel-cron
+RUN chmod 0644 /etc/cron.d/laravel-cron \
+    && crontab /etc/cron.d/laravel-cron
+
+# Create the log file to be able to run tail
+RUN touch /var/log/cron.log
+
 EXPOSE 9000
-CMD ["php-fpm"]
+
+CMD cron && php-fpm
