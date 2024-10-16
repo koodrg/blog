@@ -1,9 +1,9 @@
 services:
-    app:
+    posts:
         build:
-            context: .
+            context: ./posts
             dockerfile: Dockerfile
-        container_name: laravel
+        container_name: post-service
         environment:
             - APP_ENV=local
             - APP_DEBUG=true
@@ -20,6 +20,41 @@ services:
             - mongodb
             - elasticsearch
 
+    users:
+        build:
+            context: ./users
+            dockerfile: Dockerfile
+        container_name: user-service
+        environment:
+            - APP_ENV=local
+            - APP_DEBUG=true
+            - DB_CONNECTION=mongodb
+            - DB_HOST=mongodb
+            - DB_PORT=27018
+            - ELASTICSEARCH_HOST=elasticsearch
+            - ELASTICSEARCH_PORT=9200
+        volumes:
+            - .:/var/www
+        networks:
+            - es-net
+        depends_on:
+            - mongodb
+            - elasticsearch
+
+    rabbitmq:
+        image: rabbitmq:3-management
+        hostname: 'rabbitmq'
+        container_name: 'rabbitmq'
+        ports:
+        - 5672:5672
+        - 15672:15672
+        environment:
+        - RABBITMQ_DEFAULT_USER=admin
+        - RABBITMQ_DEFAULT_PASS=rabbit@123456
+        volumes:
+        - ./data/:/var/lib/rabbitmq/
+        - ./log/:/var/log/rabbitmq
+
     nginx:
         image: nginx:alpine
         container_name: nginx
@@ -29,11 +64,11 @@ services:
             - ./nginx/conf.d/:/etc/nginx/conf.d/
             - .:/var/www
         depends_on:
-            - app
+            - posts
+            - users
         networks:
             - es-net
 
-    # MongoDB Service
     mongodb:
         image: mongo:latest
         container_name: mongodb
@@ -47,7 +82,19 @@ services:
         ports:
             - "27018:27017"
 
-    # Elasticsearch Service
+    mysql:
+        image: mysql:8.0
+        container_name: mysql
+        restart: unless-stopped
+        environment:
+            MYSQL_ROOT_PASSWORD: 123456
+        volumes:
+            - mysql_data:/var/lib/mysql
+        networks:
+            - es-net
+        ports:
+            - "3307:3306"
+
     elasticsearch:
         image: docker.elastic.co/elasticsearch/elasticsearch:8.15.2
         container_name: elasticsearch
@@ -68,7 +115,6 @@ services:
             - "9200:9200"
             - "9300:9300"
 
-    # Kibana Service
     kibana:
         image: docker.elastic.co/kibana/kibana:8.15.2
         container_name: kibana
@@ -83,7 +129,6 @@ services:
         networks:
             - es-net
 
-    # Logstash Service
     logstash:
         image: docker.elastic.co/logstash/logstash:8.15.2
         container_name: logstash
@@ -102,6 +147,7 @@ services:
 volumes:
     mongodb_data:
     es_data:
+    mysql_data:
 
 # Networks
 networks:
