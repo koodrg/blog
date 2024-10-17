@@ -27,6 +27,7 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
+        dd('123123');
         return $this->searchPostAction->handle($request);
     }
 

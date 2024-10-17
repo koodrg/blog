@@ -2,6 +2,7 @@
 FROM php:8.3-fpm
 
 RUN apt-get update && apt-get install -y \
+    nginx \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -29,6 +30,8 @@ COPY . /var/www
 
 RUN composer install
 
+COPY ./nginx/conf.d/default.conf /etc/nginx/sites-available/default
+
 # Set permissions for Laravel
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
@@ -43,4 +46,4 @@ RUN touch /var/log/cron.log
 
 EXPOSE 9000
 
-CMD cron && php-fpm
+CMD service nginx start && php-fpm

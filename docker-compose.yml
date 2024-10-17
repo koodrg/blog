@@ -1,7 +1,7 @@
 services:
     posts:
         build:
-            context: ./posts
+            context: ./src/posts
             dockerfile: Dockerfile
         container_name: post-service
         environment:
@@ -13,7 +13,7 @@ services:
             - ELASTICSEARCH_HOST=elasticsearch
             - ELASTICSEARCH_PORT=9200
         volumes:
-            - .:/var/www
+            - ./src/posts:/var/www
         networks:
             - es-net
         depends_on:
@@ -22,7 +22,7 @@ services:
 
     users:
         build:
-            context: ./users
+            context: ./src/users
             dockerfile: Dockerfile
         container_name: user-service
         environment:
@@ -34,12 +34,27 @@ services:
             - ELASTICSEARCH_HOST=elasticsearch
             - ELASTICSEARCH_PORT=9200
         volumes:
-            - .:/var/www
+            - ./src/users:/var/www
         networks:
             - es-net
         depends_on:
-            - mongodb
+            - mysql
             - elasticsearch
+
+    nginx:
+        image: nginx:alpine
+        container_name: nginx
+        ports:
+            - "8080:80"
+        volumes:
+            - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+            - ./nginx/conf.d/:/etc/nginx/conf.d/
+            - .:/var/www
+        depends_on:
+            - posts
+            - users
+        networks:
+            - es-net
 
     rabbitmq:
         image: rabbitmq:3-management
@@ -54,20 +69,6 @@ services:
         volumes:
         - ./data/:/var/lib/rabbitmq/
         - ./log/:/var/log/rabbitmq
-
-    nginx:
-        image: nginx:alpine
-        container_name: nginx
-        ports:
-            - "8080:80"
-        volumes:
-            - ./nginx/conf.d/:/etc/nginx/conf.d/
-            - .:/var/www
-        depends_on:
-            - posts
-            - users
-        networks:
-            - es-net
 
     mongodb:
         image: mongo:latest
