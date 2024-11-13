@@ -130,19 +130,19 @@ services:
         networks:
             - es-net
 
-    logstash:
-        image: docker.elastic.co/logstash/logstash:8.15.2
-        container_name: logstash
-        volumes:
-            - ./logstash/pipeline:/usr/share/logstash/pipeline
-        ports:
-            - "5044:5044"
-            - "5000:5000"
-            - "9600:9600"
-        depends_on:
-            - elasticsearch
-        networks:
-            - es-net
+    # logstash:
+    #     image: docker.elastic.co/logstash/logstash:8.15.2
+    #     container_name: logstash
+    #     volumes:
+    #         - ./logstash/pipeline:/usr/share/logstash/pipeline
+    #     ports:
+    #         - "5044:5044"
+    #         - "5000:5000"
+    #         - "9600:9600"
+    #     depends_on:
+    #         - elasticsearch
+    #     networks:
+    #         - es-net
 
 # Volumes
 volumes:

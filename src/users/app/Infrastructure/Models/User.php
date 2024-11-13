@@ -2,12 +2,14 @@
 
 namespace App\Infrastructure\Models;
 
-use MongoDB\Laravel\Auth\User as Authenticatable;
-use MongoDB\Laravel\Eloquent\SoftDeletes;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    protected $connection = 'mongodb';
+    use Notifiable;
     use SoftDeletes;
     protected $guarded = [];
     protected $hidden = [
@@ -15,8 +17,8 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    public function posts()
+    public function notificationSettings()
     {
-        return $this->hasMany(Post::class);
+        return $this->hasMany(UserNotificationSetting::class);
     }
 }

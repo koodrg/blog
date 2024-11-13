@@ -30,7 +30,7 @@ COPY . /var/www
 
 RUN composer install
 
-COPY ./nginx/conf.d/default.conf /etc/nginx/sites-available/default
+COPY ./nginx/conf.d /etc/nginx/sites-available/
 
 # Set permissions for Laravel
 RUN chown -R www-data:www-data /var/www \

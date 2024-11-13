@@ -4,7 +4,7 @@ namespace App\Domain\User\Actions;
 
 use App\App\Api\Requests\RegisterRequest;
 use App\Infrastructure\Repositories\UserRepository;
-use Illuminate\Http\Request;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Hash;
 
 class RegisterAction
@@ -22,14 +22,13 @@ class RegisterAction
 
         if($user) {
             return response()->json([
-                'error' => "EMAIL_EXISTS",
+                'error' => "EMAIL_EXISTED",
             ]);
         }
 
         $data['password'] = Hash::make($data['password']);
-
         $user = $this->userRepository->create($data);
-        //todo: send mail verify
+        event(new Registered($user));
 
         return response()->json([
             'user' => $user,

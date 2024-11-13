@@ -25,11 +25,6 @@ class AppServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
-            'App\Domain\User\Repositories\UserRepository',
-            'App\Infrastructure\Repositories\UserRepository'
-        );
-
-        $this->app->bind(
             'App\Domain\Comment\Repositories\CommentRepositoryInterface',
             'App\Infrastructure\Repositories\CommentRepository',
         );

@@ -2,12 +2,9 @@
 
 namespace App\App\Api\Requests;
 
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\Response;
+use App\App\Api\Requests\Common\BaseRequest;
 
-class RegisterRequest extends FormRequest
+class RegisterRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -21,17 +18,5 @@ class RegisterRequest extends FormRequest
             'email' => 'required|max:255',
             'password' => 'required|max:50|min:6',
         ];
-    }
-
-    protected function failedValidation(Validator $validator)
-    {
-        $errors = $validator->errors();
-
-        $response = response()->json([
-            'message' => 'INVALID_DATA',
-            'error' => $errors->messages(),
-        ], Response::HTTP_BAD_REQUEST);
-
-        throw new HttpResponseException($response);
     }
 }
