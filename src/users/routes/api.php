@@ -26,4 +26,3 @@ Route::middleware([JwtMiddleware::class])->group(function () {
 });
 
 
-

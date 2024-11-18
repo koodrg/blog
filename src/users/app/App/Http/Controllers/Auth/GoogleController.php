@@ -4,6 +4,7 @@ namespace App\App\Http\Controllers\Auth;
 
 use App\App\Http\Controllers\Controller;
 use App\Infrastructure\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -20,9 +21,7 @@ class GoogleController extends Controller
     {
         try {
             $googleUser = Socialite::driver('google')->stateless()->user();
-
-            // Check if the user already exists
-            $user = User::where('email', $googleUser->email)->first();
+            $user = User::where('google_id', $googleUser->id)->first();
 
             if ($user) {
                 Auth::login($user);
@@ -42,5 +41,13 @@ class GoogleController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('login')->withErrors(['msg' => 'Google login failed']);
         }
+    }
+
+    public function login(Request $request) {
+        return view('auth.login');
+    }
+
+    public function signIn(Request $request) {
+
     }
 }
